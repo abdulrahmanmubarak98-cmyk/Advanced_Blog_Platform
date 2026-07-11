@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5">
+    div class="d-flex justify-content-between align-items-center mb-4"
+    <h2>Latest Posts</h2>
+
+    {% if user.is_authenticated %}
+        <a href="{% url 'create_post' %}"class="btn btn-primary">Create Post</a>
+        {% endif %}
+</div>
+{% if posts %}
+
+    <div class="row">
+        {% for post in posts %}
+
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}"
+                    class="card-img-top"
+                    alt="{{ post.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h3 class="card-title">{{ post.title }}</h3>
+                        <p class="text-muted mb-2">
+                            By
+<strong>{{ post.author }}</strong>
+                            |
+                            {{ post.created_at|date:"F d, Y"}}
+                          </p>
+                          <span class="badge bg-primary mb-3">{{ post.category}}
+
+                          </span>
+                          <p class="card-text">{{ post.content|truncatewords:30 }}
+
+                          </p>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <a href="#" class="btn btn-outline-primary">Read More</a>
+
+                    </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <div class="text-center mt-5">
+            {% if user.is_authenticated %}
+            <h3>No Posts Available</h3>
+            <p class="text-muted">Create your first post and start sharing your ideas.</p>
+            <a href="{% url 'create_post' %}" class="btn btn-success">Create Your First Post</a>
+            {% else %}
+                <h3>No Posts Available</h3>
+                <p class="text-muted">Please check back later.</p>
+            {% endif %}
+
+        </div>
+        {% endif %}
+    {% endblock}
