@@ -1,4 +1,5 @@
 from django import forms
+from .models import Post
 from django.contrib.auth.forms import UserCreationForm  # Fixed import path
 from django.contrib.auth.models import User
 
@@ -22,3 +23,9 @@ class RegisterForm(UserCreationForm):
             user.save()
 
         return user
+
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ("category", "title", "content", "image", "status", "slug", "tags")

@@ -4,6 +4,8 @@ from .forms import RegisterForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from .models import Post
+from .forms import PostForm
 
 
 def register(request):
@@ -36,3 +38,22 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect("login")
+
+
+@login_required
+def create_post(request):
+    if request.method == "POST":
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return redirect("home")
+    else:
+        form = PostForm()
+    return render(request, "account/create_post.html", {"form": form})
+
+
+def home(request):
+    posts = Post.objects.filter(status="Published").order_by("-id")
+    return render(request, "account/home.html", {"posts": posts})
