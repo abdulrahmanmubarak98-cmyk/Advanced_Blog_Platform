@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
 from .forms import RegisterForm
 from django.contrib.auth.forms import AuthenticationForm
@@ -18,7 +18,7 @@ def register(request):
     else:
         form = RegisterForm()
 
-    return render(request, "account/register.html", {"form": form})
+    return render(request, "accounts/register.html", {"form": form})
 
 
 def login_view(request):
@@ -31,7 +31,7 @@ def login_view(request):
     else:
         form = AuthenticationForm()
 
-    return render(request, "account/login.html", {"form": form})
+    return render(request, "accounts/login.html", {"form": form})
 
 
 @login_required
@@ -51,9 +51,34 @@ def create_post(request):
             return redirect("home")
     else:
         form = PostForm()
-    return render(request, "account/create_post.html", {"form": form})
+    return render(request, "blog/create_post.html", {"form": form})
 
 
 def home(request):
     posts = Post.objects.filter(status="Published").order_by("-id")
-    return render(request, "account/home.html", {"posts": posts})
+    return render(request, "blog/home.html", {"posts": posts})
+
+
+@login_required
+def edit_post(request, slug):
+    post = get_object_or_404(Post, slug=slug, author=request.user)
+
+    if request.method == "POST":
+        form = PostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect("home")
+        else:
+            form = PostForm(instance=post)
+        return render(request, "blog/edit_post.html", {"form": form})
+
+
+@login_required
+def delete_post(request, slug):
+    post = get_object_or_404(Post, slug=slug, author=request.user)
+
+    if request.method == "POST":
+        post.delete()
+        return redirect("home")
+
+    return render(request, "blog/delete_post.html", {"post": post})

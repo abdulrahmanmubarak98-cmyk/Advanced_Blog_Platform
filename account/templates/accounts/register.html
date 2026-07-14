@@ -1,14 +1,19 @@
 {% extends 'base.html' %}
 
+{% block title %}
+    Register | Advanced Blog Platform
+{% endblock %}
+
 {% block content %}
 
 <h2>Sign Up</h2>
-<form method="POST"
+<form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
 
     <button type="submit" class="btn btn-primary">Sign Up</button>
 </form>
+    
 
 <p class="mt-2">Already have an account? <a href="{% url 'login' %}">Login</a></p>
 
