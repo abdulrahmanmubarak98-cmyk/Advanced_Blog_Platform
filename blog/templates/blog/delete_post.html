@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}
+Delete post | Advanced Blog Platform
+{% endblock %}
+
+<h2>Delete Post</h2>
+
+<p>Are you sure you want to delete
+    <strong>{{post.title}}</strong>
+</p>
+<form method="POST">
+    {% csrf_token %}
+
+    <button type="submit" class="btn btn-danger">
+        Yes, Delete.
+    </button>
+    <a href="{% url 'home' %}" class="btn btn-secondary">
+        Cancel
+    </a>
+</form>
+{% endblock %}
