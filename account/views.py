@@ -5,7 +5,9 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from .models import Post
+from .models import Tag
 from .forms import PostForm
+from django.utils.text import slugify
 
 
 def register(request):
@@ -48,6 +50,14 @@ def create_post(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+            tag = form.cleaned_data["tags"]
+            tag_list = tag.split(",")
+            for tag in tag_list:
+                tag = tag.strip()
+                tag_object, created = Tag.objects.get_or_create(
+                    name=tag, defaults={"slug": slugify(tag)}
+                )
+                tag = post.tags.add(tag_object)
             return redirect("home")
     else:
         form = PostForm()
@@ -55,7 +65,7 @@ def create_post(request):
 
 
 def home(request):
-    posts = Post.objects.filter(status="Published").order_by("-id")
+    posts = Post.objects.filter(status=Post.PUBLISHED).order_by("-created_at")
     return render(request, "blog/home.html", {"posts": posts})
 
 
@@ -68,9 +78,9 @@ def edit_post(request, slug):
         if form.is_valid():
             form.save()
             return redirect("home")
-        else:
-            form = PostForm(instance=post)
-        return render(request, "blog/edit_post.html", {"form": form})
+    else:
+        form = PostForm(instance=post)
+    return render(request, "blog/edit_post.html", {"form": form, "post": post})
 
 
 @login_required
@@ -82,3 +92,8 @@ def delete_post(request, slug):
         return redirect("home")
 
     return render(request, "blog/delete_post.html", {"post": post})
+
+
+def post_detail(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+    return render(request, "blog/post_detail.html", {"post": post})

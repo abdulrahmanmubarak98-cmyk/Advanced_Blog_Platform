@@ -30,10 +30,19 @@ class Tag(models.Model):
 
 
 class Post(models.Model):
+    DRAFT = "draft"
+    PUBLISHED = "published"
+
     STATUS_CHOICES = [
-        ("draft", "Draft"),
-        ("published", "Published"),
+        (DRAFT, "Draft"),
+        (PUBLISHED, "Published"),
     ]
+
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default=DRAFT,
+    )
 
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
 

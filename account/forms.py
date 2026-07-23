@@ -26,6 +26,12 @@ class RegisterForm(UserCreationForm):
 
 
 class PostForm(forms.ModelForm):
+    tags = forms.CharField(
+        max_length=30,
+        required=False,
+    )
+
     class Meta:
+
         model = Post
         fields = ("category", "title", "content", "image", "status", "slug", "tags")

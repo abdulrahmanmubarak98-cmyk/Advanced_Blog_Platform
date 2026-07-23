@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+    {{ post.title }} | Advanced Blog Platform
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card shadow">
+        {% if post.image %}
+            <img src="{{ post.image.url }}"
+                class="card-img-top img-fluid"
+                alt="{{ post.title }}">
+        {% endif %}
+
+        <div class="card-body">
+            <h1 class="card-title">{{ post.title }}</h1>
+            <p class="text-muted">By <strong>{{post.author }}</strong>| {{ post.created_at }}</p>
+            <p>
+                <strong>Category:</strong> {{ post.category }}
+            </p>
+            <P>
+                <strong>Tags:</strong> 
+                {% for tag in post.tags.all %}
+                <span class="badge bg-primary">{{ tag.name }}</span>
+                    {% empty %}
+                        <span class="text-muted">No tags</span>
+                {% endfor %}
+            </P>
+            <hr>
+            <p class="card-text">
+                {{ post.content }}
+            </p>
+
+            <hr>
+                {% if request.user == post.author %}
+
+                <a href="{% url 'edit_post' post.slug %}" class="btn btn-warning">Edit</a>
+                <a href="{% url 'delete_post' post.slug %}" class="btn btn-danger">Delete</a>
+
+                {% endif %}
+            {% endblock %}
+            
+            </P>
+        </div>
+    </div>
+</div>
