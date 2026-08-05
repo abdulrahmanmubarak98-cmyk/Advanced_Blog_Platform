@@ -8,6 +8,8 @@ from .models import Post
 from .models import Tag
 from .forms import PostForm
 from django.utils.text import slugify
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 
 def register(request):
@@ -47,17 +49,7 @@ def create_post(request):
     if request.method == "POST":
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.save()
-            tag = form.cleaned_data["tags"]
-            tag_list = tag.split(",")
-            for tag in tag_list:
-                tag = tag.strip()
-                tag_object, created = Tag.objects.get_or_create(
-                    name=tag, defaults={"slug": slugify(tag)}
-                )
-                tag = post.tags.add(tag_object)
+            form.save(author=request.user)
             return redirect("home")
     else:
         form = PostForm()
@@ -97,3 +89,34 @@ def delete_post(request, slug):
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
     return render(request, "blog/post_detail.html", {"post": post})
+
+
+def home(request):
+    posts = Post.objects.filter(status="published").order_by("-created_at")
+    paginator = Paginator(posts, 5)
+    page_number = request.GET.get("page")
+    posts = paginator.get_page(page_number)
+
+    return render(request, "blog/home.html", {"posts": posts})
+
+
+def search(request):
+    query = request.GET.get("q")
+    if query:
+        posts = Post.objects.filter(
+            Q(title__icontains=query)
+            | Q(content__icontains=query)
+            | Q(category__name__icontains=query)
+            | Q(tags__name__icontains=query).distinct().order_by("-created_at")
+        )
+
+    else:
+        posts = Post.objects.none()
+    return render(
+        request,
+        "blog/search.html",
+        {
+            "posts": posts,
+            "query": query,
+        },
+    )
