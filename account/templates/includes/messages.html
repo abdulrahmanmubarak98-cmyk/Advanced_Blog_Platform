@@ -1,6 +1,4 @@
- <main class="container py-5">
-
-        {% if messages %}
+{% if messages %}
     {% for message in messages %}
         <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
             {{ message }}
@@ -10,4 +8,3 @@
         </div>
     {% endfor %}
 {% endif %}
-</main>

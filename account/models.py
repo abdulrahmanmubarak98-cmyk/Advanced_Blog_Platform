@@ -27,6 +27,7 @@ class Tag(models.Model):
     slug = models.SlugField(unique=True, editable=False)
 
     def save(self, *args, **kwargs):
+        self.name = self.name.strip().title()
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
@@ -59,16 +60,20 @@ class Post(models.Model):
     tags = models.ManyToManyField(Tag, blank=True, related_name="posts")
 
     title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, editable=False)
 
     content = models.TextField()
 
     image = models.ImageField(upload_to="posts/", blank=True, null=True)
 
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="draft")
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        self.title = self.title.strip()
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title

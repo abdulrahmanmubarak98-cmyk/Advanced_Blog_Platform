@@ -17,16 +17,16 @@
 
         <div class="card-body">
             <h1 class="card-title">{{ post.title }}</h1>
-            <p class="text-muted">By <strong>{{post.author }}</strong>| {{ post.created_at }}</p>
+            <p class="text-muted"> By <strong>{{post.author }}</strong>| {{ post.created_at }}</p>
             <p>
                 <strong>Category:</strong> {{ post.category }}
             </p>
             <P>
-                <strong>Tags:</strong> 
+                <strong>Tag(s):</strong> 
                 {% for tag in post.tags.all %}
                 <span class="badge bg-primary">{{ tag.name }}</span>
                     {% empty %}
-                        <span class="text-muted">No tags</span>
+                        <span class="text-muted">No tag(s)</span>
                 {% endfor %}
             </P>
             <hr>

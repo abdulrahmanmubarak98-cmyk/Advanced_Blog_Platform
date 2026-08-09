@@ -40,7 +40,6 @@ class PostForm(forms.ModelForm):
             "content",
             "image",
             "status",
-            "slug",
             "tags",
         )
 
@@ -53,32 +52,28 @@ class PostForm(forms.ModelForm):
                 tag.name for tag in self.instance.tags.all()
             )
 
+    def clean_tags(self):
+        tags = self.cleaned_data.get("tags", "")
+        tag_list = [tag.strip().title() for tag in tags.split(",") if tag.strip()]
+        return " ,".join(tag_list)
+
     def save(self, author=None, commit=True):
         # Save the Post first
         post = super().save(commit=False)
 
-        tags = self.cleaned_data.get("tags", "")
         if author:
             post.author = author
 
         if commit:
             post.save()
 
-            # Remove all old tags
-            post.tags.clear()
+        tags = self.cleaned_data.get("tags", "")
 
-        # Add the new tags
+        tag_objects = []
+
         if tags:
-            tag_list = [tag.strip() for tag in tags.split(",") if tag.strip()]
-
-            tag_objects = []
-
-            for tag_name in tag_list:
-                normalized_name = tag_name.strip().title()
-                tag, created = Tag.objects.get_or_create(
-                    name=normalized_name,
-                )
+            for tag_name in tags.split(","):
+                tag, created = Tag.objects.get_or_create(name=tag_name.strip())
                 tag_objects.append(tag)
-            post.tags.set(tag_objects)
-
+        post.tags.set(tag_objects)
         return post
