@@ -6,22 +6,28 @@
  
 {% block content %}
 
+<head class="hero">
+    <h2>Master Python & Django Through Production-Ready Projects</h2>
+    <p>Learn software engineering by building pratical Django applications using real-world development practices</p>
+
+</head>
+
 <form method="GET">
     <div class="input-group mb-4">
-        <input type="text" name="q" class="form-control">
-        <button class="btn btn-primary" type="submit">Search</button>
+        <label for="search" class="visually-hidden">Search posts</label>
+        <input type="text" id="search" name="q" class="form-control">
+        <button class="btn btn-primary" type="submit" placeholder="Search post...">Search</button>
     </div>
+
 </form>
 
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4"></div>
    
-    <h2 class="mb-3 text-dark fw-bold">Latest Post</h2>
+    <h2 class="mb-3 fw-bold">Latest Post</h2>
 
     {% if user.is_authenticated %}
         <a href="{% url 'create_post' %}"class="btn btn-primary mb-4">Create Post</a>
     {% endif %}
-</div>
+
 {% if posts %}
 
     <div class="row">
@@ -50,7 +56,7 @@
                           </p>
                     </div>
                     <div class="card-footer bg-white">
-                        <a href="{% url 'post_detail' post.slug %}"class="btn btn-outline-primary">Read More</a>
+                        <a href="{% url 'post_detail' post.slug %}" class="btn btn-outline-primary">Read More</a>
 
                     </div>
             </div>
@@ -70,14 +76,14 @@
 
         </div>
         {% endif %}
-{% endblock %}
+
 
 <nav class="mt-4">
-    <ul class="pagination justfify-content-center">
+    <ul class="pagination justify-content-center">
         {% if post.has_previous %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ post.previous_page_number }}" Previous>
-
+                <a class="page-link" href="?page={{ posts.previous_page_number }}" Previous>
+                    
                 </a>
             </li>
         {% endif %}
@@ -89,8 +95,9 @@
         </li>
         {% if posts.has_next %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ post.next_page_number }}">Next</a>
+                <a class="page-link" href="?page={{ posts.next_page_number }}">Next</a>
             </li>
         {% endif %}
     </ul>
 </nav>
+{% endblock %}
