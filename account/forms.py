@@ -48,14 +48,12 @@ class PostForm(forms.ModelForm):
 
         # Display existing tags as comma-separated text
         if self.instance.pk:
-            self.fields["tags"].initial = ", ".join(
-                tag.name for tag in self.instance.tags.all()
-            )
+            self.initial["tags"] = " ,".join( tag.name for tag in self.instance.tags.all())
 
     def clean_tags(self):
         tags = self.cleaned_data.get("tags", "")
         tag_list = [tag.strip().title() for tag in tags.split(",") if tag.strip()]
-        return " ,".join(tag_list)
+        return ", ".join(tag_list)
 
     def save(self, author=None, commit=True):
         # Save the Post first
@@ -71,9 +69,12 @@ class PostForm(forms.ModelForm):
 
         tag_objects = []
 
-        if tags:
-            for tag_name in tags.split(","):
-                tag, created = Tag.objects.get_or_create(name=tag_name.strip())
-                tag_objects.append(tag)
+        for tag_name in tags.split(","):
+                normalized_name = tag_name.strip()
+
+                if normalized_name:
+
+                    tag, created = Tag.objects.get_or_create(name=normalized_name)
+                    tag_objects.append(tag)
         post.tags.set(tag_objects)
         return post
