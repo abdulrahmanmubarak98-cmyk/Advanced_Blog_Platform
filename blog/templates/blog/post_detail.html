@@ -41,42 +41,69 @@
                 <a href="{% url 'delete_post' post.slug %}" class="btn btn-danger">Delete</a>
 
                 {% endif %}
-
+            
             <h3 class="mt-5">Comments</h3>
-            {% if user.is_authenticated %}
-                <form method="POST" action="{% url 'add_comment' post.slug %}">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary">Add Comment</button>
-                </form>
-            {% else %}
-                <p class="text-muted">
-                    Please log in to leave a comment.
-                </p>
 
-            {% for comment in comments %}
-                <div class="card mb-3 shadow-sm">
-                    <div class="card-body">
-                        <h6 class="card-title mb-1">
-                            {{ comment.user}}
-                        </h6>
-                        <small class="text-muted">
-                            {{ comment.created_at|date:"F d, Y" }}
-                        </small>
-                        <p class="card-text mt-2">
-                            {{ comment.content }}
-            {% empty %}
-                <p class="text-muted">
-                    No comments available. Be the first to comment!
-                </p>
-                            </p>
-                    </div>
-                </div>
-            {% endfor %}
+{% if user.is_authenticated %}
 
+    <form method="POST" action="{% url 'add_comment' post.slug %}">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-primary mb-3">
+            Add Comment
+        </button>
+    </form>
+
+{% else %}
+
+    <p class="text-muted">
+        Please log in to leave a comment.
+    </p>
+
+{% endif %}
+
+
+<!-- Display existing comments -->
+
+{% for comment in comments %}
+
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+
+            <h6 class="card-title mb-1">
+                {{ comment.user }}
+            </h6>
+
+            <small class="text-muted">
+                {{ comment.created_at|date:"F d, Y" }}
+            </small>
+
+            <p class="card-text mt-2">
+                {{ comment.content }}
+            </p>
+            
+            {% if user == comment.user or user == post.author %}
+                <a href="{% url 'delete_comment' comment.id %}" class="btn btn-sm-danger">Delete
+
+                </a>
             {% endif %}
 
-            {% endblock %}
+
+        </div>
+    </div>
+
+{% empty %}
+
+    <p class="text-muted">
+        No comments available. Be the first to comment!
+    </p>
+
+{% endfor %}
+            
+
+{% endblock %}
             
             </P>
         </div>

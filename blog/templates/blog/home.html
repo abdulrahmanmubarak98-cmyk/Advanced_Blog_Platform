@@ -8,12 +8,12 @@
  
 {% block content %}
 
-<section class="hero-section py-5">
+<section class="hero-section py-5" id="latest-posts">
     <div class="row align-items-center">
         <div class="col-lg-6">
             <h1 class="fw-bold">Master Python & Django Through Production-Ready Projects</h1>
             <p class="mb-3">Learn Software Engineering By Building Practical Django Applications Using Real-World Development Practices</p>
-            <a href="link will go here" class="btn btn-primary mb-3">Explore Latest Posts
+            <a href="#latest-posts" class="btn btn-primary mb-3">Explore Latest Posts
                 
             </a>
         </div>
@@ -28,6 +28,8 @@
         
     </div>
 </section>
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 <form method="GET">
     <div class="input-group mb-4">
@@ -56,7 +58,7 @@
                     <img src="{{ post.image.url }}"
                     class="card-img-top"
                     alt="{{ post.title }}">
-                    {% endif %}
+                {% endif %}
                     <div class="card-body">
                         <h3 class="card-title">{{ post.title }}</h3>
                         <p class="text-muted mb-2">

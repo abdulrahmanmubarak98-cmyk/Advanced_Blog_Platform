@@ -5,6 +5,7 @@ from django.utils.text import slugify
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    other_name = models.CharField(max_length=50, blank=True)
     bio = models.TextField(max_length=250, blank=True)
     profile_picture = models.ImageField(upload_to="profiles/", blank=True, null=True)
     location = models.CharField(max_length=30, blank=True)
@@ -48,7 +49,7 @@ class Post(models.Model):
     status = models.CharField(
         max_length=10,
         choices=STATUS_CHOICES,
-        default=DRAFT,
+        default=PUBLISHED,
     )
 
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
