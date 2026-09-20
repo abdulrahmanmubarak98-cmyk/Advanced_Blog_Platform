@@ -10,8 +10,8 @@ env.bak/
 venv/.back
 
 *.log
-dbsqlite3
-dbsqlite3-journal
+db.sqlite3
+db.sqlite3-journal
 
 media/
 staticfiles/

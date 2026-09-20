@@ -4,88 +4,100 @@
 
 {% block content %}
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <h2 class="mb-4">Create Your Account</h2>
-            <form method="POST">
-                {% csrf_token %}
+<h2 class="mb-4">Create Your Account</h2>
+        <form method="POST">
+            {% csrf_token %}
 
-                <div class="mb-3">
-                    <label for="{{ form.username.id_for_label }}" class="form-label">
-                        Username
-                    </label>
-                    {{ form.username }}
+            <!-- First Name -->
+             <div class="mb-3">
+                <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name
 
-                    {% for error in form.username.errors %}
-                        <div class="text-danger">
-                            {{ error }}
+                </label>
+{{ form.first_name }}
+                {% for error in form.first_name.errors %}
+                    <div class="text-danger small">{{ error }}
 
-                        </div>
+                    </div>
                     {% endfor %}
-                </div>
+             </div>
+             <!-- Last Name-->
+              <div class="mb-3">
+                <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                    Last Name
+                </label>
+{{ form.last_name }}
+                {% for error in form.last_name.errors %}
+                    <div class="text-danger small">
+                        {{ error }}
+                    </div>
+                    {% endfor %}
+              </div>
+              <!-- Other Name -->
+               <div class="mb-3">
+                    <label for="{{ form.other_name.id_for_label }}" class="form-label">
+                        Other Name
+                    </label>
+{{ form.other_name }}
+                    <div class="form-text">
+                
+                    </div>
+                    {% for error in form.other_name.errors %}
+                    <div class="text-danger small">
+                        {{ error }}
+                    </div>
+                    {% endfor %}
+               </div>
+               <!-- Email -->
                 <div class="mb-3">
                     <label for="{{ form.email.id_for_label }}" class="form-label">
                         Email
                     </label>
-
-                    {{ form.email }}
-
+{{ form.email }}
                     {% for error in form.email.errors %}
-                        <div class="text-danger">
+                        <div class="text-danger small">
                             {{ error }}
                         </div>
-                    {% endfor %}
+                        {% endfor %}
                 </div>
-
-                <!-- password -->
-                <div class="mb-3">
-                    <label for="{{ form.password.id_for_label }}" class="form-label">
-                        Password
-                    </label>
-                    {{ form.password }}
-                    
-                    {% for error in form.password1.errors %}
-                        <div class="text-danger">
-                            {{ error }}
-                        </div>
-                    {% endfor %}
-                </div>
-                <!-- Confirm Password-->
+                <!-- Password -->
                  <div class="mb-3">
-                    <label for="{{ form.password.id_for_label }}" class="form-label">
-                        Confirm Paasword
+                    <label for="{{ form.password1.id_for_label }}" class="form-label">Password
+
                     </label>
-
-                    {{ form.password }}
-
-                    {% for error in form.password2.errors %}
-                        <div class="text-danger">
-                            {{ error }}
-                        </div>
+{{ form.password1 }}
+                    {% for error in form.password1.errors %}
+                    <div class="text-danger small">
+                        {{ error }}
+                    </div>
                     {% endfor %}
                  </div>
-                {% if form.non_field_errors %}
-                    <div class="alert alert-danger">
-                        {% for error in form.non_field_errors %}
-                            {{ error }}
-                        {% endfor %}
+                 <!-- Confirm Password-->
+                  <div class="mb-3">
+                    <label for="{{ form.password2.id_for_label }}" class="form-label">Confirm Password
+
+                    </label>
+{{ form.password2 }}
+                    {% for error in form.password2.errors %}
+                    <div class="text-danger small">
+                        {{ error }}
                     </div>
-                {% endif %}
+                    {% endfor %}
+                  </div>
+                  <!--Non-Field -->
+                  {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
 
-                <button type="submit" class="btn btn-primary">
-                    Create Account
-                </button>
+                        <button type="submit" class="btn btn-primary">Create Account
 
-
-            </form>
-
-            <p class="mt-3">
-                Already have an account?
-                <a href="{% url 'login' %}">Login</a>
-            </p>
-        </div>
-    </div>
-</div>
+                        </button>
+        </form>
+        <p class="mt-3">
+            Already have an account? <a href="{% url 'login' %}">Login</a>
+        </p>
 
 {% endblock %}
