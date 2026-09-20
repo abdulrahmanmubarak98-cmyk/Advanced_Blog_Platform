@@ -1,15 +1,13 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from .forms import RegisterForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from .models import Post
-from .models import Tag
-from .forms import PostForm
-from django.utils.text import slugify
 
 from django.db.models import Q
+from django.contrib import messages
 
 
 def register(request):
@@ -18,6 +16,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            messages.success(request, "Welcome, " + user.first_name + "!" )
             return redirect("home")
     else:
         form = RegisterForm()
@@ -31,6 +30,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            messages.success(request, "Welcome back, " + user.first_name + "!" )
             return redirect("home")
     else:
         form = AuthenticationForm()

@@ -2,13 +2,14 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Post, Tag
-
+from django import forms
+from django.utils.text import slugify
 
 class RegisterForm(UserCreationForm):
-    # This explicitly makes email a required field on the front-end
+    # This explicitly makes all the field a requirement on the front-end excluding other_name
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
-    other_name = forms.CharField(required=True)
+    other_name = forms.CharField(required=False)
     email = forms.EmailField(required=True)
 
     class Meta:
@@ -20,8 +21,33 @@ class RegisterForm(UserCreationForm):
             "password1",
             "password2",
         )
+    def clean_email(self):
 
-        def __init__(self, *args, **kwargs):
+
+        # Get the email submitted by the user
+
+        email = self.cleaned_data.get('email')
+        # Check if a user with this email already exists in the  database ignoring case sensitivity
+        if User.objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError("A user with this email address already exists.")
+        
+            # Return the validated email so django can keep it inside cleaned_data
+        return email
+
+
+    def generate_username(self, first_name, last_name): 
+
+            base_username = slugify(f"{first_name}.{last_name}")
+
+            username = base_username
+            counter = 1
+
+            while User.objects.filter(username=username).exists():
+                username = f"{base_username}{counter}"
+                counter += 1
+            return username
+
+    def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
 
             self.fields["first_name"].widget.attrs.update(
@@ -41,25 +67,25 @@ class RegisterForm(UserCreationForm):
             self.fields["other_name"].widget.attrs.update(
                 {
                     "class": "form-control",
-                    "placeholder": "Enter your other name(optional)",
+                    "placeholder": "Enter your other name (optional)",
                 }
             )
 
-            self.fields["email"].widget.attr.update(
+            self.fields["email"].widget.attrs.update(
                 {
                     "class": "form-control",
                     "placeholder": "Enter your email",
                 }
             )
 
-            self.fields["password1"].widget.attr.update(
+            self.fields["password1"].widget.attrs.update(
                 {
                     "class": "form-control",
                     "placeholder": "Create a password",
                 }
             )
 
-            self.fields["password2"].widget.attr.update(
+            self.fields["password2"].widget.attrs.update(
                 {
                     "class": "form-control",
                     "placeholder": "Confirm your password",
@@ -70,12 +96,13 @@ class RegisterForm(UserCreationForm):
         # Obtain user object instance without writing to DB yet
         user = super().save(commit=False)
 
-        user.first_name = self.cleaned_data["first_name"]
+        first_name = self.cleaned_data["first_name"]
+        last_name = self.cleaned_data["last_name"]
 
-        user.last_name = self.cleamed_data["last_name"]
+        user.username = self.generate_username(first_name, last_name)
 
-        user.email = self.cleaned_data["email"]
-
+        user.first_name = first_name
+        user.last_name = last_name
         user.email = self.cleaned_data["email"]
 
         if commit:
