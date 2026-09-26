@@ -7,4 +7,5 @@ urlpatterns = [
     path("post/<slug:slug>/delete/", views.delete_post, name="delete_post"),
     path("", views.home, name="home"),
     path("posts/create/", views.create_post, name="create_post"),
+    path("search/", views.SearchView.as_view(), name="search"),
 ]

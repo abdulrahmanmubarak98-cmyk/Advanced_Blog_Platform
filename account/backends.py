@@ -24,8 +24,7 @@ class EmailBackend:
         except User.DoesNotExist:
             return None
 
-        # check whether the submitted password matches 
-        # the password hash stored for this user.
+        # check whether the submitted password matches the password hash stored for this user.
 
         if user.check_password(password):
 
@@ -36,5 +35,11 @@ class EmailBackend:
 
             # Authentication fails if the password is incorrect or the user account is not active.
         return None
+
+    def get_user(self, user_id):
+        try:
+            return User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return None
 
         
