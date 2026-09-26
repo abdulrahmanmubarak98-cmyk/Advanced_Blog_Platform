@@ -4,6 +4,9 @@ from account.models import Post
 from account.forms import PostForm
 from django.core.paginator import Paginator
 from comments.forms import CommentForm
+from django.db.models import Q
+from .models import Post
+from django.views import View
 
 
 @login_required
@@ -70,3 +73,23 @@ def home(request):
     posts = paginator.get_page(page_number)
 
     return render(request, "blog/home.html", {"posts": posts})
+
+
+class SearchView(View):
+    def get(self, request):
+        query = request.GET.get("q")
+        if query:
+            posts = (
+                Post.object.filter(
+                    Q(title__icontains=query)
+                    | Q(content__icontains=query)
+                    | Q(category__name__icontains=query)
+                    | Q(tags__name__icontains=query)
+                )
+                .distinct()
+                .order_by("-created_at")
+            )
+        else:
+            posts = Post.objects.none()
+
+            return render(request, "blog/search.html", {"posts": posts, "query": query})

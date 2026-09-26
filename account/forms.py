@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from .models import Post, Tag
 from django import forms
 from django.utils.text import slugify
+from django.contrib.auth.forms import AuthenticationForm
+
 
 class RegisterForm(UserCreationForm):
     # This explicitly makes all the field a requirement on the front-end excluding other_name
@@ -21,12 +23,13 @@ class RegisterForm(UserCreationForm):
             "password1",
             "password2",
         )
+
     def clean_email(self):
 
 
         # Get the email submitted by the user
-
         email = self.cleaned_data.get('email')
+        
         # Check if a user with this email already exists in the  database ignoring case sensitivity
         if User.objects.filter(email__iexact=email).exists():
             raise forms.ValidationError("A user with this email address already exists.")
@@ -113,6 +116,13 @@ class RegisterForm(UserCreationForm):
             profile.save()
 
         return user
+
+class EmailAuthenticationForm(AuthenticationForm):
+    # Replace Django's username input with an email input field for authentication
+    username = forms.EmailField(label="Email", widget=forms.EmailInput(attrs={"class": "form-control", "placeholder": "Enter your email",}),)
+
+    # Keep Django's existing password field, but customize it appearance.
+    password = forms.CharField(widget=forms.PasswordInput(attrs={"class": "form-control", "placeholder": "Enter your password",}),)
 
 
 class PostForm(forms.ModelForm):
