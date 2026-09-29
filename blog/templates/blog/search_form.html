@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<header>
+    
+    {{ query }}
+
+</header>
+
+{% for post in posts %}
+
+<a href="{% url "post_detail" post.slug %}">
+    {{ post.title }}
+</a>
+
+{% empty %}
+    <p class="text-muted">No result found.</p>
+
+{% endfor %}
+{% endblock %}
+
+
+
+<form method="GET" action="{% url "search" %}">
+    <div class="input-group mb-4">
+        <label for="search" class="visually-hidden">Search posts</label>
+        <input type="text" id="search" name="q" class="form-control" placeholder="Search post...">
+        <button class="btn btn-primary" type="submit">Search</button>
+    </div>
+
+</form>

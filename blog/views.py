@@ -5,7 +5,7 @@ from account.forms import PostForm
 from django.core.paginator import Paginator
 from comments.forms import CommentForm
 from django.db.models import Q
-from .models import Post
+from account.models import Post
 from django.views import View
 
 
@@ -80,7 +80,7 @@ class SearchView(View):
         query = request.GET.get("q")
         if query:
             posts = (
-                Post.object.filter(
+                Post.objects.filter(
                     Q(title__icontains=query)
                     | Q(content__icontains=query)
                     | Q(category__name__icontains=query)
@@ -92,4 +92,6 @@ class SearchView(View):
         else:
             posts = Post.objects.none()
 
-            return render(request, "blog/search.html", {"posts": posts, "query": query})
+        return render(
+            request, "blog/search_form.html", {"posts": posts, "query": query}
+        )
