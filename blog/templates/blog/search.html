@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% include "includes/search_form.html" %}
+
+<h2>Search results for: {{ query }}
+
+</h2>
+{% for post in posts %}
+
+    <a href="{% url 'post_detail' post.slug %}">
+        {{ post.title }}
+    </a>
+
+{% empty %}
+
+    <p class="text-muted">
+        No result found
+    </p>
+
+{% endfor %}
+{% endblock %}
+
+
+
