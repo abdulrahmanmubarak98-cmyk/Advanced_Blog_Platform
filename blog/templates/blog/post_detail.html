@@ -82,8 +82,15 @@
             </p>
             
             {% if user == comment.user or user == post.author %}
-                <a href="{% url 'delete_comment' comment.id %}" class="btn btn-sm-danger">Delete
+                <a href="{% url 'delete_comment' comment.id %}" class="btn btn-sm btn-danger">Delete
 
+                </a>
+
+            {% endif %}
+
+            {% if user == comment.user %}
+                <a href="{% url 'edit_comment' comment.id %}" class="btn btn-sm btn-primary">Edit
+                    
                 </a>
             {% endif %}
 

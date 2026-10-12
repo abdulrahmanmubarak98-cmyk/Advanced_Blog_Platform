@@ -41,3 +41,24 @@ def delete_comment(request, comment_id):
         "comments/delete_comment.html",
         {"comment": comment},
     )
+
+
+@login_required
+def edit_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if request.user != comment.user:
+        return HttpResponseForbidden("You are not allowed to edit this comment.")
+
+    if request.method == "POST":
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            comment = form.save()
+            return redirect("post_detail", slug=comment.post.slug)
+    else:
+        form = CommentForm(instance=comment)
+
+    return render(
+        request,
+        "comments/edit_comment.html",
+        {"form": form, "comment": comment},
+    )
