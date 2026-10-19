@@ -6,6 +6,7 @@ from django.db.models import Q
 from account.models import Post
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
+from likes.models import Like
 
 
 # Create a new post.
@@ -115,6 +116,19 @@ class PostDetailView(View):
         # There is no author=request.user because post detail pages are publicly accessible
         post = get_object_or_404(Post, slug=slug)
 
+        # (Like.objects)Access the like records through Django's ORM
+        # (filter)Rretrieves records matching the condition
+        # (post=post)Select like records whose post foreign Key points to the current post object
+        likes = Like.objects.filter(post=post)
+
+        # This returns the total number of Like record associated with the current post.
+        like_count = likes.count()
+
+        # Check whether the logged-in user liked this post.
+        user_liked = (
+            request.user.is_authenticated and likes.filter(user=request.user).exists()
+        )
+
         # Retrieve all Comment objects related to this particular post.
         # post.comments comes from the relationship defined on
         # the Comment model.
@@ -135,6 +149,8 @@ class PostDetailView(View):
                 "post": post,
                 "form": form,
                 "comments": comments,
+                "like_count": like_count,
+                "user_liked": user_liked,
             },
         )
 

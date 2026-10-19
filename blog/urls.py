@@ -18,7 +18,9 @@ urlpatterns = [
         name="edit_post",
     ),
     path(
-        "posts/<slug:slug>/delete/", views.DeletePostView.as_view(), name="delete_post"
+        "posts/<slug:slug>/delete/",
+        views.DeletePostView.as_view(),
+        name="delete_post",
     ),
     path(
         "",
