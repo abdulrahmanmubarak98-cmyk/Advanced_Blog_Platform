@@ -107,9 +107,42 @@
 {% endfor %}
             
 
-{% endblock %}
-            
+
             </P>
         </div>
+        
     </div>
+    {% if user.is_authenticated %}
+    <form id="like-form" method="POST" action="{% url 'like_post' post.slug %}" class="mt-4">
+        {% csrf_token %}
+
+        <button id="like-button" type="submit" class="btn btn-sm btn-primary">
+            {% if user_liked %}
+                Unlike
+            {% else %}
+                Like
+            {% endif %}
+        </button>
+
+    </form>
+
+    {% endif %}
+
+    <p class="mt-2">
+        Likes: <span id="like-count">{{ like_count }}</span>
+    </p>
+
 </div>
+
+<script>
+    // Find the like form in the page 
+    const likeForm = document.getElementById("like-form");
+
+    // Intercept the form submission
+    likeForm.addEventListener("submit", async function (event) {
+        // stop the normal page reload.
+        event.preventDefault();
+    });
+</script>
+{% endblock %}
+            
