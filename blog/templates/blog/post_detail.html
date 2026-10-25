@@ -135,13 +135,49 @@
 </div>
 
 <script>
-    // Find the like form in the page 
+    
+    // Find the Like form.
     const likeForm = document.getElementById("like-form");
 
-    // Intercept the form submission
+    // Intercept the form submission to prevent a page reload.
     likeForm.addEventListener("submit", async function (event) {
-        // stop the normal page reload.
         event.preventDefault();
+
+        try {
+            // Send the POST request to Django.
+            const response = await fetch(likeForm.action, {
+                method: "POST",
+                body: new FormData(likeForm),
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            });
+
+            // Stop if Django returns an unsuccessful HTTP status.
+            if (!response.ok) {
+                throw new Error("The server could not process your like.");
+            }
+
+            // Read Django's JSON response.
+            const data = await response.json();
+
+            // Find the button and like count.
+            const likeButton = document.getElementById("like-button");
+            const likeCount = document.getElementById("like-count");
+
+            // Update the interface after a successful response.
+            likeButton.textContent = data.user_liked ? "Unlike" : "Like";
+            likeCount.textContent = data.like_count;
+
+        } catch (error) {
+            // Record the error for debugging.
+            console.error("Like request failed:", error);
+
+            // Inform the user that the operation could not be confirmed.
+            alert(
+                "Unable to update your like. Please check your connection and try again."
+            );
+        }
     });
 </script>
 {% endblock %}
