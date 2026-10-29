@@ -112,26 +112,32 @@
         </div>
         
     </div>
-    {% if user.is_authenticated %}
-    <form id="like-form" method="POST" action="{% url 'like_post' post.slug %}" class="mt-4">
-        {% csrf_token %}
-
-        <button id="like-button" type="submit" class="btn btn-sm btn-primary">
-            {% if user_liked %}
-                Unlike
-            {% else %}
-                Like
-            {% endif %}
-        </button>
-
-    </form>
-
+    <div class="d-flex align-items-center gap-3 mt-4">
+        {% if user.is_authenticated %}
+        <form
+            id="like-form"
+            method="POST"
+            action="{% url 'like_post' post.slug %}"
+            class="mb-0"
+        >
+            {% csrf_token %}
+            <button
+                id="like-button"
+                type="submit"
+                class="btn btn-sm btn-primary"
+            >
+                {% if user_liked %}
+                    Unlike
+                {% else %}
+                    Like
+                {% endif %}
+            </button>
+        </form>
     {% endif %}
 
-    <p class="mt-2">
+    <p class="mb-0">
         Likes: <span id="like-count">{{ like_count }}</span>
     </p>
-
 </div>
 
 <script>
@@ -180,5 +186,6 @@
         }
     });
 </script>
+
 {% endblock %}
             
