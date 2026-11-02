@@ -112,8 +112,11 @@
         </div>
         
     </div>
-    <div class="d-flex align-items-center gap-3 mt-4">
-        {% if user.is_authenticated %}
+    <div class="d-flex align-items-center gap-3 mt-4 flex-wrap">
+
+    {% if user.is_authenticated %}
+
+        <!-- Like form -->
         <form
             id="like-form"
             method="POST"
@@ -121,6 +124,7 @@
             class="mb-0"
         >
             {% csrf_token %}
+
             <button
                 id="like-button"
                 type="submit"
@@ -133,13 +137,39 @@
                 {% endif %}
             </button>
         </form>
-    {% endif %}
 
+        <!-- Like count -->
     <p class="mb-0">
         Likes: <span id="like-count">{{ like_count }}</span>
     </p>
-</div>
 
+
+        <!-- Bookmark form -->
+        <form
+            id="bookmark-form"
+            method="POST"
+            action="{% url 'bookmark_post' post.slug %}"
+            class="ms-3"
+        >
+            {% csrf_token %}
+
+            <button
+                id="bookmark-button"
+                type="submit"
+                class="btn btn-sm btn-outline-secondary"
+            >
+                {% if user_bookmarked %}
+                    Remove Bookmark
+                {% else %}
+                    Bookmark
+                {% endif %}
+            </button>
+        </form>
+
+    {% endif %}
+
+    
+</div>
 <script>
     
     // Find the Like form.
@@ -185,6 +215,54 @@
             );
         }
     });
+</script>
+
+<script>
+    // Find the Bookmark form.
+    const bookmarkForm = document.getElementById("bookmark-form");
+
+    // Intercept submission to prevent a page reload.
+    if (bookmarkForm) {
+        bookmarkForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            try {
+                // Send the POST request to Django.
+                const response = await fetch(bookmarkForm.action, {
+                    method: "POST",
+                    body: new FormData(bookmarkForm),
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest"
+                    }
+                });
+
+                // Handle unsuccessful HTTP responses.
+                if (!response.ok) {
+                    throw new Error("The server could not process your bookmark.");
+                }
+
+                // Read Django's JSON response.
+                const data = await response.json();
+
+                // Find the Bookmark button.
+                const bookmarkButton = document.getElementById("bookmark-button");
+
+                // Update the button based on the saved state.
+                bookmarkButton.textContent = data.user_bookmarked
+                    ? "Remove Bookmark"
+                    : "Bookmark";
+
+            } catch (error) {
+                // Log the error for debugging.
+                console.error("Bookmark request failed:", error);
+
+                // Inform the user without changing the button state.
+                alert(
+                    "Unable to update your bookmark. Please check your connection and try again."
+                );
+            }
+        });
+    }
 </script>
 
 {% endblock %}
