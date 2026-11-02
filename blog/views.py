@@ -7,6 +7,7 @@ from account.models import Post
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from likes.models import Like
+from bookmarks.models import Bookmark
 
 
 # Create a new post.
@@ -116,15 +117,22 @@ class PostDetailView(View):
         # There is no author=request.user because post detail pages are publicly accessible
         post = get_object_or_404(Post, slug=slug)
 
-        # (Like.objects)Access the like records through Django's ORM
-        # (filter)Rretrieves records matching the condition
-        # (post=post)Select like records whose post foreign Key points to the current post object
+        # Check whether the current user has bookmarked this post.
+        user_bookmarked = (
+            request.user.is_authenticated
+            and Bookmark.objects.filter(
+                user=request.user,
+                post=post,
+            ).exists()
+        )
+
+        # Retrieve all likes associated with this post
         likes = Like.objects.filter(post=post)
 
-        # This returns the total number of Like record associated with the current post.
+        # Count the likes.
         like_count = likes.count()
 
-        # Check whether the logged-in user liked this post.
+        # Check whether the current user liked this post.
         user_liked = (
             request.user.is_authenticated and likes.filter(user=request.user).exists()
         )
@@ -151,6 +159,7 @@ class PostDetailView(View):
                 "comments": comments,
                 "like_count": like_count,
                 "user_liked": user_liked,
+                "user_bookmarked": user_bookmarked,
             },
         )
 

@@ -2,6 +2,15 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # ... your other URLs ...
-    path("post/<slug:slug>/bookmark/", views.toggle_bookmark, name="toggle_bookmark"),
+    path(
+        "post/<slug:slug>/bookmark/",
+        views.bookmark_post,
+        name="bookmark_post",
+    ),
+    # Display the logged-in user's saved posts
+    path(
+        "saved-post/",
+        views.saved_posts,
+        name="saved_posts",
+    ),
 ]

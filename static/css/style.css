@@ -65,3 +65,38 @@
         animation: none;
     }
 }
+
+/* Hero section layout */
+.hero-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+        "copy image"
+        "action image";
+    align-items: center;
+    gap: 20px;
+}
+
+/* Assign elements to grid areas */
+.hero-copy {
+    grid-area: copy;
+}
+
+.hero-image {
+    grid-area: image;
+}
+
+.hero-action {
+    grid-area: action;
+}
+
+/* Mobile layout */
+@media (max-width: 991.98px) {
+    .hero-layout {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "copy"
+            "image"
+            "action";
+    }
+}
