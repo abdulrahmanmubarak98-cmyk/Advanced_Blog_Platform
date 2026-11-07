@@ -124,3 +124,52 @@ class BookmarkTests(TestCase):
                 post=self.post,
             ).exists()
         )
+
+    def test_user_only_sees_their_own_bookmarks(self):
+        # Create a second user.
+        second_user = User.objects.create_user(
+            username="seconduser",
+            password="secondpassword123",
+        )
+
+        # Create a post owned by the second user.
+        second_post = Post.objects.create(
+            author=second_user,
+            category=self.category,
+            title="A message to my Akhi.",
+            content="Inded this method is the best for me to become an independent developer.",
+        )
+
+        # Create a bookmark belonging to the first user.
+        first_bookmark = Bookmark.objects.create(
+            user=self.user,
+            post=self.post,
+        )
+
+        # Create another bookmark belonging to the second user.
+        second_bookmark = Bookmark.objects.create(
+            user=second_user,
+            post=second_post,
+        )
+
+        # Log in as the first user.
+        self.client.login(
+            username="testuser",
+            password="testpassword123",
+        )
+
+        # Visit the Saved Posts page.
+        response = self.client.get(reverse("saved_posts"))
+
+        # Confirm the page loads successfully.
+        self.assertEqual(response.status_code, 200)
+
+        # Retrieve the bookmarks queryset from the template context.
+        saved_bookmarks = response.context["bookmarks"]
+
+        # Confirm that only the first user's bookmark is returned.
+        self.assertQuerySetEqual(
+            saved_bookmarks,
+            [first_bookmark.pk],
+            transform=lambda bookmark: bookmark.pk,
+        )
