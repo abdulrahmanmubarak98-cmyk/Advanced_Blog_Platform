@@ -60,7 +60,7 @@
         {% for post in posts %}
 
         <div class="col-lg-6 mb-4">
-            <div class="card h-100 shadow-sm">
+            <div class="card h-100 shadow-sm theme-card">
                 {% if post.image %}
                     <img src="{{ post.image.url }}"
                     class="card-img-top"
@@ -68,10 +68,10 @@
                 {% endif %}
                     <div class="card-body">
                         <h3 class="card-title">{{ post.title }}</h3>
-                        <p class="text-muted mb-2">
+                        <p class="theme-muted mb-2">
                             By
-<strong>{{ post.author }}</strong>
-                            |
+ <strong>{{ post.author }}</strong>
+                              |
                             {{ post.created_at|date:"F d, Y"}}
                           </p>
                           <span class="badge bg-primary mb-3">{{ post.category}}
@@ -81,7 +81,7 @@
 
                           </p>
                     </div>
-                    <div class="card-footer bg-white">
+                    <div class="card-footer theme-card-footer">
                         <a href="{% url 'post_detail' post.slug %}" class="btn btn-outline-primary">Read More</a>
 
                     </div>

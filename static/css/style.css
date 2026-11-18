@@ -50,7 +50,7 @@
 
 @keyframes fadeIn {
     from {
-        opacity: o;
+        opacity: 0;
     }
     to {
         opacity: 1;
@@ -99,4 +99,67 @@
             "image"
             "action";
     }
+}
+
+:root {
+
+    --bg-color: white;
+    --text-color: #212529;
+    --card-bg: white;
+    --border-color: lightgrey;
+    --navbar-bg: grey;
+    --muted-text: #6c757d;
+
+    }
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+html[data-theme="dark"] {
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --text-color: #e0e0e0;
+    --navbar-bg: #1e1e1e;
+    --border-color: #333333;
+    --muted-text: #a0a0a0;
+}
+
+.theme-navbar{
+    background-color: var(--navbar-bg);
+}
+
+.theme-navbar  a {
+    color: var(--text-color);
+}
+
+.theme-navbar  a:hover{
+    color: var(--muted-text);
+}
+
+html[data-theme="dark"]  .theme-navbar  .navbar-toggler-icon {
+    filter: invert(1);
+}
+
+.theme-card {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+.theme-card-footer {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+.theme-muted {
+    color: var(--muted-text);
+}
+
+.theme-textarea {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+
 }

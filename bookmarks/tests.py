@@ -74,7 +74,6 @@ class BookmarkTests(TestCase):
         )
 
         # Send a POST request to remove the bookmark
-
         response = self.client.post(reverse("bookmark_post", args=[self.post.slug]))
 
         # confirm the request succeeds.
@@ -172,4 +171,19 @@ class BookmarkTests(TestCase):
             saved_bookmarks,
             [first_bookmark.pk],
             transform=lambda bookmark: bookmark.pk,
+        )
+
+    def test_unauthenticated_user_cannot_access_saved_posts(self):
+
+        # Make a GET request without authenticating the visitor.
+        response = self.client.get(reverse("saved_posts"))
+
+        # Confirm Django returns an HTTP 302 redirect.
+        self.assertEqual(response.status_code, 302)
+
+        # Confirm the visitor was redirected to the login page
+        # With the original requested page preserved in 'next'.
+        self.assertRedirects(
+            response,
+            f"{reverse('login')}?next={reverse('saved_posts')}",
         )

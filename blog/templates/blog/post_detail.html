@@ -5,7 +5,7 @@
 {% block content %}
 
 <div class="container mt-5">
-    <div class="card shadow">
+    <div class="card mb-0 shadow-sm theme-card">
         {% if post.image %}
             <img src="{{ post.image.url }}"
                 class="card-img-top img-fluid"
@@ -14,18 +14,18 @@
 
         <div class="card-body">
             <h1 class="card-title">{{ post.title }}</h1>
-            <p class="text-muted"> By <strong>{{post.author }}</strong>| {{ post.created_at }}</p>
+            <p class="theme-muted"> By <strong>{{post.author }}</strong>| {{ post.created_at }}</p>
             <p>
                 <strong>Category:</strong> {{ post.category }}
             </p>
-            <P>
+            <p>
                 <strong>Tag(s):</strong> 
                 {% for tag in post.tags.all %}
                 <span class="badge bg-primary">{{ tag.name }}</span>
                     {% empty %}
-                        <span class="text-muted">No tag(s)</span>
+                        <span class="theme-muted">No tag(s)</span>
                 {% endfor %}
-            </P>
+            </p>
             <hr>
             <p class="card-text">
                 {{ post.content }}
@@ -55,7 +55,7 @@
 
 {% else %}
 
-    <p class="text-muted">
+    <p class="theme-muted">
         Please log in to leave a comment.
     </p>
 
@@ -66,14 +66,14 @@
 
 {% for comment in comments %}
 
-    <div class="card mb-3 shadow-sm">
+    <div class="card mb-3 shadow-sm theme-card">
         <div class="card-body">
 
             <h6 class="card-title mb-1">
                 {{ comment.user }}
             </h6>
 
-            <small class="text-muted">
+            <small class="theme-muted">
                 {{ comment.created_at|date:"F d, Y" }}
             </small>
 
@@ -100,7 +100,7 @@
 
 {% empty %}
 
-    <p class="text-muted">
+    <p class="theme-muted">
         No comments available. Be the first to comment!
     </p>
 
@@ -108,7 +108,7 @@
             
 
 
-            </P>
+            
         </div>
         
     </div>
@@ -173,48 +173,55 @@
 <script>
     
     // Find the Like form.
-    const likeForm = document.getElementById("like-form");
+        const likeForm = document.getElementById("like-form");
 
-    // Intercept the form submission to prevent a page reload.
-    likeForm.addEventListener("submit", async function (event) {
-        event.preventDefault();
+        // Check whether the Like form exists.
+        if (likeForm) {
 
-        try {
-            // Send the POST request to Django.
-            const response = await fetch(likeForm.action, {
-                method: "POST",
-                body: new FormData(likeForm),
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest"
+            // Attach the submit event listener.
+            likeForm.addEventListener("submit", async function (event) {
+
+                // Prevent the default form submission.
+                event.preventDefault();
+
+                try {
+                    // Send the POST request to Django.
+                    const response = await fetch(likeForm.action, {
+                        method: "POST",
+                        body: new FormData(likeForm),
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest"
+                        }
+                    });
+
+                    // Stop if Django returns an unsuccessful HTTP status.
+                    if (!response.ok) {
+                        throw new Error("The server could not process your like.");
+                    }
+
+                    // Read Django's JSON response.
+                    const data = await response.json();
+
+                    // Find the button and like count.
+                    const likeButton = document.getElementById("like-button");
+                    const likeCount = document.getElementById("like-count");
+
+                    // Update the interface after a successful response.
+                    likeButton.textContent = data.user_liked ? "Unlike" : "Like";
+                    likeCount.textContent = data.like_count;
+
+                } catch (error) {
+
+                    // Record the error for debugging.
+                    console.error("Like request failed:", error);
+
+                    // Inform the user that the operation could not be confirmed.
+                    alert(
+                        "Unable to update your like. Please check your connection and try again."
+                    );
                 }
             });
-
-            // Stop if Django returns an unsuccessful HTTP status.
-            if (!response.ok) {
-                throw new Error("The server could not process your like.");
-            }
-
-            // Read Django's JSON response.
-            const data = await response.json();
-
-            // Find the button and like count.
-            const likeButton = document.getElementById("like-button");
-            const likeCount = document.getElementById("like-count");
-
-            // Update the interface after a successful response.
-            likeButton.textContent = data.user_liked ? "Unlike" : "Like";
-            likeCount.textContent = data.like_count;
-
-        } catch (error) {
-            // Record the error for debugging.
-            console.error("Like request failed:", error);
-
-            // Inform the user that the operation could not be confirmed.
-            alert(
-                "Unable to update your like. Please check your connection and try again."
-            );
         }
-    });
 </script>
 
 <script>
