@@ -10,7 +10,7 @@
                     type="button"
                     data-bs-toggle="collapse"
                     data-bs-target="#navbarNav"
-                    aria-controls="navbarNavbar"
+                    aria-controls="navbarNav"
                     aria-label="Toggle navigation">
 
                 <span class="navbar-toggler-icon"></span>
@@ -68,6 +68,27 @@
                         </li>
 
                     {% endif %}
+                          <!-- Accessible light/dark theme toggle -->
+            <li class="nav-item d-flex align-items-center ms-lg-3 mt-2 mt-lg-0">
+                <button
+                    type="button"
+                    id="themeToggle"
+                    class="btn btn-outline-primary btn-sm"
+                    aria-label="Switch to dark mode"
+                    aria-pressed="false"
+                    title="Switch theme">
+
+                    <i
+                        id="themeToggleIcon"
+                        class="bi bi-moon-stars-fill"
+                        aria-hidden="true"></i>
+
+                    <span id="themeToggleLabel" class="visually-hidden">
+                        Switch to dark mode
+                    </span>
+                </button>
+            </li>
+
 
                 </ul>
 
